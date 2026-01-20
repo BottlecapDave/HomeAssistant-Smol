@@ -1,0 +1,48 @@
+name: Unknown intelligent provider
+description: You have been notified of an unknown intelligent provider within HA and want to help resolve the issue.
+labels: ["enhancement"]
+assignees:
+  - BottlecapDave
+body:
+  - type: input
+    id: provider
+    attributes:
+      label: Provider name
+      description: Please provide the name of the provider as presented in the raised repair notice
+    validations:
+      required: true
+  - type: textarea
+    id: bump_charge
+    attributes:
+      label: Ability to bump charge within the app
+      description: Please provide a screenshot of the feature within the app or type "Not available"
+    validations:
+      required: true
+  - type: textarea
+    id: target_charge
+    attributes:
+      label: Ability to set the charge limit/target within the app
+      description: Please provide a screenshot of the feature within the app or type "Not available"
+    validations:
+      required: true
+  - type: textarea
+    id: target_time
+    attributes:
+      label: Ability to set the time the charge will be at its target for within the app
+      description: Please provide a screenshot of the feature within the app or type "Not available"
+    validations:
+      required: true
+  - type: textarea
+    id: smart_charge
+    attributes:
+      label: Ability to turn smart charge on/off within the app
+      description: Please provide a screenshot of the feature within the app or type "Not available"
+    validations:
+      required: true
+  - type: textarea
+    id: planned_dispatches
+    attributes:
+      label: Ability to see planned dispatches within the app
+      description: Please provide a screenshot of the feature within the app or type "Not available"
+    validations:
+      required: true
