@@ -1,0 +1,42 @@
+{
+  "title": "Smol",
+  "config": {
+    "step": {
+      "account": {
+        "title": "Smol Account",
+        "description": "Setup your basic account information. Full documentation can be found at https://bottlecapdave.github.io/HomeAssistant-Smol/setup/account",
+        "data": {
+          "name": "Name",
+          "username": "Smol username",
+          "password": "Smol password"
+        },
+        "data_description": {
+          "name": "An identifier for this account (e.g. main)"
+        }
+      },
+      "reconfigure_account": {
+        "title": "Update Account Info",
+        "description": "Update your basic account information. Full documentation can be found at https://bottlecapdave.github.io/HomeAssistant-Smol/setup/account",
+        "data": {
+          "username": "Smol username",
+          "password": "Smol password"
+        }
+      }
+    },
+    "error": {
+      "server_error": "Failed to connect to Smol servers. Please try again later",
+      "account_not_found": "Invalid username/password combination"
+    },
+    "abort": {
+      "reconfigure_not_supported": "Reconfiguration is not supported.",
+      "account_not_found": "Account information is not found",
+      "reconfigure_successful": "Reconfiguration successful"
+    }
+  },
+  "issues": {
+    "account_not_found": {
+      "title": "Account \"{name}\" not found",
+      "description": "The integration failed to retrieve the information associated with your configured account. Please check your account exists and that your username and password are valid. Click \"Learn More\" to find out how to fix this."
+    }
+  }
+}
