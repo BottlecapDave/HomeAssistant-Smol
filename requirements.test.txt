@@ -3,6 +3,7 @@ pytest-socket
 pytest-asyncio
 mock
 homeassistant==2025.8.3
+pydantic
 psutil-home-assistant
 # Fixes compatibility issues "module 'pycares' has no attribute 'ares_query_a_result'"
 pycares==4.11.0
