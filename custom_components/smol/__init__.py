@@ -12,7 +12,7 @@ from homeassistant.util.dt import (utcnow)
 
 from .api_client import ApiException, AuthenticationException, SmolApiClient
 from .config.main import async_migrate_main_config
-from .const import CONFIG_ACCOUNT_NAME, CONFIG_ACCOUNT_PASSWORD, CONFIG_ACCOUNT_USERNAME, CONFIG_KIND, CONFIG_KIND_ACCOUNT, CONFIG_VERSION, DATA_ACCOUNT, DATA_CLIENT, DOMAIN, REPAIR_ACCOUNT_NOT_FOUND
+from .const import CONFIG_ACCOUNT_NAME, CONFIG_ACCOUNT_PASSWORD, CONFIG_ACCOUNT_USERNAME, CONFIG_KIND, CONFIG_KIND_ACCOUNT, CONFIG_VERSION, DATA_ACCOUNT, DATA_CLIENT, DOMAIN, REFRESH_RATE_IN_MINUTES_ACCOUNT, REPAIR_ACCOUNT_NOT_FOUND
 from .coordinators.account import AccountCoordinatorResult, async_setup_account_info_coordinator
 from .utils.repairs import safe_repair_key
 from .storage.account import async_load_cached_account, async_save_cached_account
@@ -121,6 +121,7 @@ async def async_setup_account(hass, account_name, config):
   # Delete any issues that may have been previously raised
   ir.async_delete_issue(hass, DOMAIN, safe_repair_key(REPAIR_ACCOUNT_NOT_FOUND, account_name))
 
+  is_cached_account = False
   try:
     account_info = await client.async_get_account()
     if (account_info is None):
@@ -142,10 +143,11 @@ async def async_setup_account(hass, account_name, config):
       )
       raise ConfigEntryNotReady(f"Failed to retrieve account information: {e}")
     else:
+      is_cached_account = True
       account_info = await async_load_cached_account(hass, account_name)
       if (account_info is None):
         raise ConfigEntryNotReady(f"Failed to retrieve account information: {e}")
       else:
         _LOGGER.warning(f"Using cached account information for {account_name} during startup. This data will be updated automatically when available.")
   
-  hass.data[DOMAIN][account_name][DATA_ACCOUNT] = AccountCoordinatorResult(utcnow(), 1, account_info)
+  hass.data[DOMAIN][account_name][DATA_ACCOUNT] = AccountCoordinatorResult(utcnow() + timedelta(minutes=REFRESH_RATE_IN_MINUTES_ACCOUNT if not is_cached_account else 0), 1, account_info)

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import logging
 
 from homeassistant.const import (
@@ -7,7 +8,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import generate_entity_id
 
-from homeassistant.util.dt import (now)
+from homeassistant.util.dt import (now, utcnow, as_local)
 from homeassistant.helpers.update_coordinator import (
   CoordinatorEntity
 )
@@ -15,10 +16,12 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity
 )
 from homeassistant.helpers.restore_state import RestoreEntity
+from homeassistant.exceptions import ServiceValidationError
 
 from ..utils.attributes import dict_to_typed_dict
 from ..api_client.account import SmolAccount
 from ..coordinators.account import AccountCoordinatorResult
+from ..api_client import SmolApiClient
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -27,12 +30,13 @@ class SmolIsOnHoliday(CoordinatorEntity, BinarySensorEntity, RestoreEntity):
   
   _unrecorded_attributes = frozenset({"data_last_retrieved"})
 
-  def __init__(self, hass: HomeAssistant, coordinator, account_name: str):
+  def __init__(self, hass: HomeAssistant, coordinator, client: SmolApiClient, account_name: str):
     """Init sensor."""
 
     CoordinatorEntity.__init__(self, coordinator)
   
     self._account_name = account_name
+    self._client = client
     self._state = None
     self._attributes = {}
     self._last_updated = None
@@ -65,8 +69,7 @@ class SmolIsOnHoliday(CoordinatorEntity, BinarySensorEntity, RestoreEntity):
   
   @callback
   def _handle_coordinator_update(self) -> None:
-    """Determine if current forecast is highlighted by OE."""
-    current = now()
+    """Determine if the account is on holiday"""
     self._state = False
     result: AccountCoordinatorResult = self.coordinator.data if self.coordinator is not None and self.coordinator.data is not None else None
     account: SmolAccount | None = result.account if result is not None else None
@@ -75,7 +78,7 @@ class SmolIsOnHoliday(CoordinatorEntity, BinarySensorEntity, RestoreEntity):
 
       self._attributes = {}
 
-      self._state = account.holidayMode is not None and account.holidayMode.config is not None
+      self._state = account.holidayMode is not None and account.holidayMode.config is not None and account.holidayMode.config.endDate > now()
 
     self._attributes = dict_to_typed_dict(self._attributes)
     super()._handle_coordinator_update()
@@ -94,3 +97,25 @@ class SmolIsOnHoliday(CoordinatorEntity, BinarySensorEntity, RestoreEntity):
       self._state = False
     
     _LOGGER.debug(f'Restored SmolIsOnHoliday state: {self._state}')
+
+  @callback
+  async def async_start_holiday_mode(self, end_date_time: datetime):
+    """Start holiday mode"""
+    local_end_date_time = as_local(end_date_time)
+    if local_end_date_time < utcnow().replace(minute=0, second=0, microsecond=0) + timedelta(days=1):
+      raise ServiceValidationError("End date time must be in the future")
+
+    result = await self._client.async_start_holiday(local_end_date_time)
+    if result is not True:
+      raise ServiceValidationError("Failed to start holiday mode")
+
+    await self.coordinator.refresh_account()
+
+  @callback
+  async def async_end_holiday_mode(self):
+    """End holiday mode"""
+    result = await self._client.async_end_holiday()
+    if result is not True:
+      raise ServiceValidationError("Failed to end holiday mode")
+
+    await self.coordinator.refresh_account()

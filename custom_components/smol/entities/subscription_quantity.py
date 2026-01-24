@@ -48,7 +48,7 @@ class SmolSubscriptionQuantity(CoordinatorEntity, RestoreSensor):
   @property
   def name(self):
     """Name of the sensor."""
-    return f"Subscription Quantity {self._subscription.product.typeId} ({self._account_name})"
+    return f"Subscription Quantity {self._subscription.product.name} ({self._account_name})"
 
   @property
   def icon(self):
@@ -66,7 +66,6 @@ class SmolSubscriptionQuantity(CoordinatorEntity, RestoreSensor):
   
   @callback
   def _handle_coordinator_update(self) -> None:
-    """Retrieve the current rate for the sensor."""
     # Find the current rate. We only need to do this every half an hour
     current = now()
     result: AccountCoordinatorResult = self.coordinator.data if self.coordinator is not None and self.coordinator.data is not None else None
@@ -92,5 +91,4 @@ class SmolSubscriptionQuantity(CoordinatorEntity, RestoreSensor):
     
     if state is not None and last_sensor_state is not None and self._state is None:
       self._state = None if state.state in (STATE_UNAVAILABLE, STATE_UNKNOWN) else last_sensor_state.native_value
-      self._attributes = dict_to_typed_dict(state.attributes, [])
       _LOGGER.debug(f'Restored SmolSubscriptionQuantity state: {self._state}')

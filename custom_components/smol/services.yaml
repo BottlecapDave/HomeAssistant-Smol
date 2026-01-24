@@ -1,0 +1,21 @@
+start_holiday_mode:
+  name: Start holiday mode
+  description: Puts a Smol account into holiday mode. The entity should be `binary_sensor.smol_{{ACCOUNT_NAME}}_is_on_holiday`. 
+  target:
+    entity:
+      integration: smol
+      domain: binary_sensor
+  fields:
+    end_date_time:
+      name: End datetime
+      description: The datetime of when the holiday mode should end
+      selector:
+        datetime:
+
+stop_holiday_mode:
+  name: Stop holiday mode
+  description: Takes a Smol account out of holiday mode. The entity should be `binary_sensor.smol_{{ACCOUNT_NAME}}_is_on_holiday`. 
+  target:
+    entity:
+      integration: smol
+      domain: binary_sensor

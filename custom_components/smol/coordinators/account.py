@@ -35,6 +35,27 @@ class AccountCoordinatorResult(BaseCoordinatorResult):
     super().__init__(last_evaluated, request_attempts, REFRESH_RATE_IN_MINUTES_ACCOUNT, None, last_error)
     self.account = account
 
+class AccountDataUpdateCoordinator(DataUpdateCoordinator):
+  
+  def __init__(self, hass, name: str, refresh_account) -> None:
+    """Initialize coordinator."""
+    self.__refresh_account = refresh_account
+    super().__init__(
+        hass,
+        _LOGGER,
+        name=name,
+        update_method=self.__refresh_account,
+        update_interval=timedelta(seconds=COORDINATOR_REFRESH_IN_SECONDS),
+        always_update=True
+    )
+
+  async def refresh_account(self):
+    _LOGGER.debug('Refreshing account')
+    result = await self.__refresh_account(is_manual_refresh=True)
+    self.data = result
+    self.async_update_listeners()
+    return result
+
 def raise_account_not_found(hass, name: str):
   ir.async_create_issue(
     hass,
@@ -55,10 +76,11 @@ async def async_refresh_account(
   client: SmolApiClient,
   name: str,
   previous_request: AccountCoordinatorResult,
+  is_manual_refresh: bool,
   raise_account_not_found: Callable[[], None],
   clear_issue: Callable[[str], None]
 ):
-  if (current >= previous_request.next_refresh):
+  if (current >= previous_request.next_refresh or is_manual_refresh):
     account_info = None
     try:
       account_info = await client.async_get_account()
@@ -94,7 +116,7 @@ async def async_refresh_account(
   return previous_request
 
 async def async_setup_account_info_coordinator(hass, name: str):
-  async def async_update_account_data():
+  async def async_update_account_data(is_manual_refresh = False):
     """Fetch data from API endpoint."""
     # Only get data every half hour or if we don't have any data
     current = now()
@@ -108,23 +130,19 @@ async def async_setup_account_info_coordinator(hass, name: str):
       client,
       name,
       hass.data[DOMAIN][name][DATA_ACCOUNT],
+      is_manual_refresh,
       lambda: raise_account_not_found(hass, name),
       lambda key: clear_issue(hass, key)
     )
     hass.data[DOMAIN][name][DATA_ACCOUNT] = account_info
 
-    if account_info is not None:
-      await async_save_cached_account(hass, name, account_info)
+    if account_info is not None and account_info.account is not None:
+      await async_save_cached_account(hass, name, account_info.account)
     
     return account_info
 
-  hass.data[DOMAIN][name][DATA_ACCOUNT_COORDINATOR] = DataUpdateCoordinator(
+  hass.data[DOMAIN][name][DATA_ACCOUNT_COORDINATOR] = AccountDataUpdateCoordinator(
     hass,
-    _LOGGER,
-    name=f"update_account-{name}",
-    update_method=async_update_account_data,
-    # Because of how we're using the data, we'll update every minute, but we will only actually retrieve
-    # data every 30 minutes
-    update_interval=timedelta(seconds=COORDINATOR_REFRESH_IN_SECONDS),
-    always_update=True
+    f"update_account-{name}",
+    async_update_account_data
   )

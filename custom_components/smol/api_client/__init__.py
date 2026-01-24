@@ -32,6 +32,38 @@ account_query = '''query GetAccount {{
   }}
 }}'''
 
+start_holiday_mode_mutation = '''mutation StartHolidayMode {{
+  startHolidayMode(input: {{
+    endDate: "{end_date}"
+    market: {market}
+  }}) {{
+    ...HolidayMode
+    __typename
+ }}
+}}
+
+fragment HolidayMode on HolidayMode {{
+  id
+  __typename
+}}
+'''
+
+end_holiday_mode_mutation = '''mutation EndHolidayMode {{
+  endHolidayModeEarly(input: {{
+    market: {market}
+  }}) {{
+    ...HolidayMode
+    __typename
+  }}
+}}
+
+fragment HolidayMode on HolidayMode {{
+  id
+  __typename
+}}
+
+'''
+
 
 user_agent_value = "bottlecapdave-ha-smol"
 
@@ -193,6 +225,60 @@ class SmolApiClient:
       raise TimeoutException()
     
     return None
+  
+  async def async_start_holiday(self, end_date: datetime) -> SmolAccount | None:
+    """Set holiday mode for the user"""
+    await self.async_refresh_token()
+
+    try:
+      client = self._create_client_session()
+      url = f'{self._base_url}/v2/graphql'
+      # Get account response
+      payload = { "query": start_holiday_mode_mutation.format(end_date=end_date.isoformat(), market=self._market), "variables": { "market": self._market } }
+      headers = { "Authorization": f"Bearer {self._graphql_token}" }
+      async with client.post(url, json=payload, headers=headers) as account_response:
+        account_response_body = await self.__async_read_response__(account_response, url)
+        _LOGGER.debug(f'start_holiday response: {account_response_body}')
+
+        if (account_response_body is not None and 
+            "data" in account_response_body and 
+            "startHolidayMode" in account_response_body["data"]):
+          return "id" in account_response_body["data"]["startHolidayMode"]
+        else:
+          _LOGGER.error("Failed to set holiday mode")
+    
+    except TimeoutError:
+      _LOGGER.warning(f'Failed to connect. Timeout of {self._timeout} exceeded.')
+      raise TimeoutException()
+    
+    return False
+  
+  async def async_end_holiday(self) -> SmolAccount | None:
+    """End holiday mode for the user"""
+    await self.async_refresh_token()
+
+    try:
+      client = self._create_client_session()
+      url = f'{self._base_url}/v2/graphql'
+      # Get account response
+      payload = { "query": end_holiday_mode_mutation.format(market=self._market), "variables": { "market": self._market } }
+      headers = { "Authorization": f"Bearer {self._graphql_token}" }
+      async with client.post(url, json=payload, headers=headers) as account_response:
+        account_response_body = await self.__async_read_response__(account_response, url)
+        _LOGGER.debug(f'end_holiday response: {account_response_body}')
+
+        if (account_response_body is not None and 
+            "data" in account_response_body and 
+            "endHolidayModeEarly" in account_response_body["data"]):
+          return "id" in account_response_body["data"]["endHolidayModeEarly"]
+        else:
+          _LOGGER.error("Failed to set holiday mode")
+    
+    except TimeoutError:
+      _LOGGER.warning(f'Failed to connect. Timeout of {self._timeout} exceeded.')
+      raise TimeoutException()
+    
+    return False
 
   async def __async_read_response__(self, response, url, ignore_errors = False, accepted_error_codes = []):
     """Reads the response, logging any json errors"""

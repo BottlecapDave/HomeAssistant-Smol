@@ -66,7 +66,6 @@ class SmolHolidayEndDate(CoordinatorEntity, RestoreSensor):
   
   @callback
   def _handle_coordinator_update(self) -> None:
-    """Retrieve the current rate for the sensor."""
     # Find the current rate. We only need to do this every half an hour
     current = now()
     result: AccountCoordinatorResult = self.coordinator.data if self.coordinator is not None and self.coordinator.data is not None else None
