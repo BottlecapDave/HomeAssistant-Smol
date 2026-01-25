@@ -22,7 +22,11 @@ account_query = '''query GetAccount {{
       }}
     }}
     subscriptions(orderBy: NEXT_CHARGE_DATE_ASC) {{
-      nextChargeScheduledAt,
+      id
+      nextChargeScheduledAt
+      address {{
+        id
+      }}
       product {{
         typeId
         name
@@ -61,9 +65,20 @@ fragment HolidayMode on HolidayMode {{
   id
   __typename
 }}
-
 '''
 
+change_next_charge_date_mutation = '''mutation ChangeNextChargeDate {{
+  changeNextChargeDate(input: {{
+    market: {market}
+    date: "{next_charge_date}"
+    subscriptionId: "{subscription_id}"
+    addressId: "{address_id}"
+    donateAWashSubscriptionId: null
+  }}) {{
+    __typename
+  }}
+}}
+'''
 
 user_agent_value = "bottlecapdave-ha-smol"
 
@@ -273,6 +288,33 @@ class SmolApiClient:
           return "id" in account_response_body["data"]["endHolidayModeEarly"]
         else:
           _LOGGER.error("Failed to set holiday mode")
+    
+    except TimeoutError:
+      _LOGGER.warning(f'Failed to connect. Timeout of {self._timeout} exceeded.')
+      raise TimeoutException()
+    
+    return False
+  
+  async def async_change_next_charge_date(self, subscription_id: str, address_id: str, next_charge_date: datetime) -> SmolAccount | None:
+    """End holiday mode for the user"""
+    await self.async_refresh_token()
+
+    try:
+      client = self._create_client_session()
+      url = f'{self._base_url}/v2/graphql'
+      # Get account response
+      payload = { "query": change_next_charge_date_mutation.format(market=self._market, next_charge_date=next_charge_date.isoformat(), subscription_id=subscription_id, address_id=address_id), "variables": { "market": self._market } }
+      headers = { "Authorization": f"Bearer {self._graphql_token}" }
+      async with client.post(url, json=payload, headers=headers) as account_response:
+        account_response_body = await self.__async_read_response__(account_response, url)
+        _LOGGER.debug(f'end_holiday response: {account_response_body}')
+
+        if (account_response_body is not None and 
+            "data" in account_response_body and 
+            "changeNextChargeDate" in account_response_body["data"]):
+          return True
+        else:
+          _LOGGER.error("Failed to change next charge date")
     
     except TimeoutError:
       _LOGGER.warning(f'Failed to connect. Timeout of {self._timeout} exceeded.')

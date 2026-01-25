@@ -12,10 +12,24 @@ start_holiday_mode:
       selector:
         datetime:
 
-stop_holiday_mode:
-  name: Stop holiday mode
+end_holiday_mode:
+  name: End holiday mode
   description: Takes a Smol account out of holiday mode. The entity should be `binary_sensor.smol_{{ACCOUNT_NAME}}_is_on_holiday`. 
   target:
     entity:
       integration: smol
       domain: binary_sensor
+
+change_next_charge_date:
+  name: Change next charge date
+  description: Changes the next charge date for a Smol subscription. The entity should be `sensor.smol_{{ACCOUNT_NAME}}_{{PRODUCT_ID}}_subscription_next_charge`. 
+  target:
+    entity:
+      integration: smol
+      domain: sensor
+  fields:
+    next_charge_date:
+      name: Next charge date date
+      description: The next charge date the subscription should be changed to
+      selector:
+        date:

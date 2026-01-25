@@ -1,6 +1,7 @@
 {
     "services": {
         "start_holiday_mode": "mdi:palm-tree",
-        "end_holiday_mode": "mdi:home"
+        "end_holiday_mode": "mdi:home",
+        "change_next_charge_date": "mdi:calendar-edit"
     }
 }

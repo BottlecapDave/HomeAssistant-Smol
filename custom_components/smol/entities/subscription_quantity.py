@@ -34,6 +34,7 @@ class SmolSubscriptionQuantity(CoordinatorEntity, RestoreSensor):
     self._subscription = subscription
     self._state = None
     self._attributes = {
+      "subscription_id": self._subscription.id,
       "product_type_id": self._subscription.product.typeId,
       "product_name": self._subscription.product.name,
     }

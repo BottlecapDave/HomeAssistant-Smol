@@ -1,7 +1,6 @@
 import logging
 
 import voluptuous as vol
-from homeassistant.core import SupportsResponse
 from homeassistant.helpers import config_validation as cv, entity_platform
 
 from .entities.is_on_holiday import SmolIsOnHoliday
@@ -43,8 +42,7 @@ async def async_setup_default_sensors(hass, config, async_add_entities):
           extra=vol.ALLOW_EXTRA,
         ),
       ),
-      "async_start_holiday_mode",
-      supports_response=SupportsResponse.ONLY
+      "async_start_holiday_mode"
     )
 
     platform.async_register_entity_service(
@@ -55,8 +53,7 @@ async def async_setup_default_sensors(hass, config, async_add_entities):
           extra=vol.ALLOW_EXTRA,
         ),
       ),
-      "async_end_holiday_mode",
-      supports_response=SupportsResponse.ONLY
+      "async_end_holiday_mode"
     )
 
   async_add_entities(entities, True)

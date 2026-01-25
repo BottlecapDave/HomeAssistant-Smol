@@ -7,7 +7,7 @@ from integration import get_test_context
 from custom_components.smol.api_client import SmolApiClient
 
 @pytest.mark.asyncio
-async def test_when_start_holiday_mode_is_called_then_details_returned():
+async def test_when_start_holiday_mode_is_called_then_true_returned():
     # Arrange
     context = get_test_context()
 

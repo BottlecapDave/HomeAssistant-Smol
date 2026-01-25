@@ -26,7 +26,10 @@ async def test_when_get_account_is_called_then_details_returned():
     assert len(result.subscriptions) > 0
     
     for subscription in result.subscriptions:
+        assert subscription.id is not None
         assert subscription.product is not None
         assert subscription.product.typeId is not None
         assert subscription.product.name is not None
         assert subscription.product.packSize > 0
+        assert subscription.address is not None
+        assert subscription.address.id is not None
