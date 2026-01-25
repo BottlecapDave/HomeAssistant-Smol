@@ -11,17 +11,19 @@
   - [FAQ](#faq)
   - [Sponsorship](#sponsorship)
 
-Custom component built from the ground up to bring your Smol details into Home Assistant to help you towards a more energy efficient (and or cheaper) home. This integration is built against the API provided by Smol UK and has not been tested for any other countries. 
+Custom component built from the ground up to bring your Smol details into Home Assistant to help you manage and keep track of your Smol subscriptions. This integration is built against the private API provided by Smol UK and has not been tested for any other countries. 
 
 This integration is in no way affiliated with Smol.
 
-If you find this useful and are planning on moving to Smol, why not use my [referral link](http://smol.refr.cc/default/u/davidk8)?
+If you find this useful and are planning on useing Smol, why not use my [referral link](http://smol.refr.cc/default/u/davidk8)?
 
 ## Features
 
 Below are the main features of the integration
 
-
+* Keep track and set your holiday mode
+* See when your next subscription is due
+* See how much will be delivered as part of your subscription
 
 ## How to install
 

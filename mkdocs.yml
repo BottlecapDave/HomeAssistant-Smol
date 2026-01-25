@@ -8,7 +8,6 @@ nav:
     - ./setup/account.md
   - Entities: ./entities.md
   - services.md
-  - events.md
   - blueprints.md
   - faq.md
   - sponsorship.md

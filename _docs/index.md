@@ -4,6 +4,10 @@
 
 Below are the main features of the integration
 
+* Keep track and set your holiday mode
+* See when your next subscription is due
+* See how much will be delivered as part of your subscription
+
 ## How to install
 
 There are multiple ways of installing the integration. Once you've installed the integration, you'll need to [setup your account](#how-to-setup) before you can use the integration.
