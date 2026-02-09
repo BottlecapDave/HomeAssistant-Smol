@@ -64,6 +64,8 @@ jobs:
     if: ${{ github.repository_owner == 'BottlecapDave' && github.repository_owner == github.actor }}
     name: Integration Tests
     runs-on: ubuntu-latest
+    concurrency:
+      group: integration-tests
     timeout-minutes: 15
     strategy:
       matrix:
