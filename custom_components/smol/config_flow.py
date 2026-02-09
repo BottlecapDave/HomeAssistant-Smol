@@ -16,6 +16,10 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+description_placeholders = {
+  "setup_account_docs_url": "https://bottlecapdave.github.io/HomeAssistant-Smol/setup/account"
+}
+
 def get_account_names(hass):
     account_names: list[str] = []
     for entry in hass.config_entries.async_entries(DOMAIN, include_ignore=False):
@@ -62,7 +66,8 @@ class SmolConfigFlow(ConfigFlow, domain=DOMAIN):
         self.__setup_account_schema__(),
         user_input if user_input is not None else {}
       ),
-      errors=errors
+      errors=errors,
+      description_placeholders=description_placeholders
     )
   
   async def async_step_reconfigure_account(self, user_input):
@@ -88,7 +93,8 @@ class SmolConfigFlow(ConfigFlow, domain=DOMAIN):
         self.__setup_account_schema__(False),
         config
       ),
-      errors=errors
+      errors=errors,
+      description_placeholders=description_placeholders
     )
 
   async def async_step_user(self, user_input):
@@ -104,6 +110,7 @@ class SmolConfigFlow(ConfigFlow, domain=DOMAIN):
     return self.async_show_form(
       step_id="account",
       data_schema=self.__setup_account_schema__(),
+      description_placeholders=description_placeholders
     )
   
   async def async_step_reconfigure(self, user_input):

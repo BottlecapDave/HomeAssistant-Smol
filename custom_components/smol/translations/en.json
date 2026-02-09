@@ -4,7 +4,7 @@
     "step": {
       "account": {
         "title": "Smol Account",
-        "description": "Setup your basic account information. Full documentation can be found at https://bottlecapdave.github.io/HomeAssistant-Smol/setup/account",
+        "description": "Setup your basic account information. Full documentation can be found at {setup_account_docs_url}",
         "data": {
           "name": "Name",
           "username": "Smol username",
@@ -16,7 +16,7 @@
       },
       "reconfigure_account": {
         "title": "Update Account Info",
-        "description": "Update your basic account information. Full documentation can be found at https://bottlecapdave.github.io/HomeAssistant-Smol/setup/account",
+        "description": "Update your basic account information. Full documentation can be found at {setup_account_docs_url}",
         "data": {
           "username": "Smol username",
           "password": "Smol password"
