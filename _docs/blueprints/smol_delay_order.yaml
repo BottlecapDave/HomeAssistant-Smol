@@ -1,0 +1,78 @@
+blueprint:
+  name: Smol - Delay subscription order
+  description: Automatically delay the next order for a Smol subscription when stock levels are too high
+  domain: automation
+  author: BottlecapDave
+  input:
+    next_charge_entity:
+      name: Next charge entity
+      description: The entity representing the next charge date for the Smol subscription (e.g sensor.smol_{{ACCOUNT_NAME}}_{{PRODUCT_ID}}_subscription_next_charge)
+      selector:
+        entity:
+          filter:
+          - domain:
+            - sensor
+            integration: smol
+    stock_entity:
+      name: Stock entity
+      description: The entity representing the internal stock level for the Smol subscription
+      selector:
+        entity:
+          filter:
+          - domain:
+            - sensor
+            - input_number
+    minimum_stock_level:
+      name: Minimum stock level
+      description: The minimum stock level to trigger a delay of the next order
+      default: 10
+      selector:
+        number:
+          min: 0
+          step: 1
+    delay_in_days:
+      name: Delay in days
+      description: The number of days to delay the next order by when stock levels are too high
+      default: 7
+      selector:
+        number:
+          min: 1
+          step: 1
+    additional_conditions:
+      name: Additional conditions
+      description: |
+        Extra conditions you may want to add to this automation (e.g. where calendar contains a word)
+      default: []
+      selector:
+        condition:
+    actions:
+      name: Actions
+      description: Notifications or similar to be run.
+      default: []
+      selector:
+        action: {}
+trigger_variables:
+  next_charge_entity: !input next_charge_entity
+  stock_entity: !input stock_entity
+  minimum_stock_level: !input minimum_stock_level
+  delay_in_days: !input delay_in_days
+mode: queued
+triggers:
+- trigger: time
+  at:
+    entity_id: !input next_charge_entity
+    offset: '-48:00:00'
+conditions:
+- condition: numeric_state
+  entity_id: !input stock_entity
+  above: !input minimum_stock_level
+- and: !input additional_conditions
+actions:
+- action: smol.change_next_charge_date
+  target:
+    entity_id: !input next_charge_entity
+  data:
+    next_charge_date: >
+      {{ now().date() + timedelta(days=delay_in_days) }}
+- choose: []
+  default: !input actions

@@ -1,0 +1,55 @@
+blueprint:
+  name: Smol - Start holiday mode from calendar
+  description: Automatically starts a Smol accounts holiday mode when a calendar entry starts
+  domain: automation
+  author: BottlecapDave
+  input:
+    calendar_entity:
+      name: Calendar entity
+      description: The entity of the calendar to monitor
+      selector:
+        entity:
+          filter:
+          - domain:
+            - calendar
+    smol_holiday_entity:
+      name: Is On Holiday entity
+      description: The is holiday entity for the Smol account to update (e.g binary_sensor.smol_{{ACCOUNT_NAME}}_is_on_holiday)
+      selector:
+        entity:
+          filter:
+          - domain:
+            - binary_sensor
+            integration: smol
+    additional_conditions:
+      name: Additional conditions
+      description: |
+        Extra conditions you may want to add to this automation (e.g. where calendar contains a word)
+      default: []
+      selector:
+        condition:
+    actions:
+      name: Actions
+      description: Notifications or similar to be run
+      default: []
+      selector:
+        action: {}
+trigger_variables:
+  calendar_entity: !input calendar_entity
+  smol_holiday_entity: !input smol_holiday_entity
+mode: queued
+triggers:
+- trigger: calendar
+  entity_id: !input calendar_entity
+  event: start
+conditions:
+- and: !input additional_conditions
+actions:
+- action: smol.start_holiday_mode
+  target:
+    entity_id: !input smol_holiday_entity
+  data:
+    end_date_time: >
+      {{ as_datetime(trigger.calendar_event.end) }}
+- choose: []
+  default: !input actions
