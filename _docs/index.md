@@ -33,11 +33,7 @@ Please follow the [setup guide](./setup/account.md) to setup your initial accoun
 
 ## Entities
 
-TBC
-
-## Events
-
-This integration raises several events, which can be used for various tasks like automations. For more information, please see the [events docs](./events.md).
+This integration includes several entities. Please see [entities](./entities.md) for more information.
 
 ## Services
 
