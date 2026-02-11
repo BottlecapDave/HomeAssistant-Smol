@@ -345,6 +345,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Entities
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -354,6 +365,61 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#is-on-holiday" class="md-nav__link">
+    <span class="md-ellipsis">
+      Is On Holiday
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#holiday-end-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      Holiday End Date
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-quantity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subscription Quantity
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-next-charge" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subscription Next Charge
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -371,26 +437,6 @@
   
   <span class="md-ellipsis">
     Services
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../events/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Events
   </span>
   
 
@@ -479,6 +525,50 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#is-on-holiday" class="md-nav__link">
+    <span class="md-ellipsis">
+      Is On Holiday
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#holiday-end-date" class="md-nav__link">
+    <span class="md-ellipsis">
+      Holiday End Date
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-quantity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subscription Quantity
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subscription-next-charge" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subscription Next Charge
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -496,6 +586,20 @@
 
 
 <h1 id="entities">Entities<a class="headerlink" href="#entities" title="Permanent link">#</a></h1>
+<p>The following entities are available with each configured account</p>
+<h2 id="is-on-holiday">Is On Holiday<a class="headerlink" href="#is-on-holiday" title="Permanent link">#</a></h2>
+<p><code>binary_sensor.smol_{{ACCOUNT_NAME}}_is_on_holiday</code></p>
+<p>Binary sensor to determine if your account is currently in holiday mode</p>
+<h2 id="holiday-end-date">Holiday End Date<a class="headerlink" href="#holiday-end-date" title="Permanent link">#</a></h2>
+<p><code>sensor.smol_{{ACCOUNT_NAME}}_holiday_end_date</code></p>
+<p>Sensor to determine the end date of your holiday for your account</p>
+<h2 id="subscription-quantity">Subscription Quantity<a class="headerlink" href="#subscription-quantity" title="Permanent link">#</a></h2>
+<p><code>sensor.smol_{{ACCOUNT_NAME}}_{{PRODUCT_ID}}_subscription_quantity</code></p>
+<p>Sensor indicating the quantity of items that are present in each delivery of your subscription. For example, this might return 30 if you are subscribed to 30 dishwasher tablets.</p>
+<h2 id="subscription-next-charge">Subscription Next Charge<a class="headerlink" href="#subscription-next-charge" title="Permanent link">#</a></h2>
+<p><code>sensor.smol_{{ACCOUNT_NAME}}_{{PRODUCT_ID}}_subscription_next_charge</code></p>
+<p>Sensor indicating the next time the subscription will be charged. When this changes and you're not in holiday mode, it's a good indication that a subscription has been sent.</p>
+<p>This can be changed using the <a href="../services/#smolchange_next_charge_date">change next charge date service</a>.</p>
 
 
 

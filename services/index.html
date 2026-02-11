@@ -12,7 +12,7 @@
         <link rel="prev" href="../entities/">
       
       
-        <link rel="next" href="../events/">
+        <link rel="next" href="../blueprints/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -386,26 +386,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../events/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Events
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../blueprints/" class="md-nav__link">
         
   
@@ -497,6 +477,71 @@
 
 <h1 id="services">Services<a class="headerlink" href="#services" title="Permanent link">#</a></h1>
 <p>There are a few services available within this integration, which are detailed here.</p>
+<h1 id="holidays">Holidays<a class="headerlink" href="#holidays" title="Permanent link">#</a></h1>
+<h2 id="smolstart_holiday_mode">smol.start_holiday_mode<a class="headerlink" href="#smolstart_holiday_mode" title="Permanent link">#</a></h2>
+<p>Puts a Smol account into holiday mode.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Optional</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>target.entity_id</code></td>
+<td><code>no</code></td>
+<td>The name of the holiday sensor (i.e. <code>binary_sensor.smol_{{ACCOUNT_NAME}}_is_on_holiday</code>) that represents the account to put into holiday mode.</td>
+</tr>
+<tr>
+<td><code>data.end_date_time</code></td>
+<td><code>no</code></td>
+<td>The datetime for when your holiday should end.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="smolend_holiday_mode">smol.end_holiday_mode<a class="headerlink" href="#smolend_holiday_mode" title="Permanent link">#</a></h2>
+<p>Takes a Smol account out of holiday mode</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Optional</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>target.entity_id</code></td>
+<td><code>no</code></td>
+<td>The name of the holiday sensor (i.e. <code>binary_sensor.smol_{{ACCOUNT_NAME}}_is_on_holiday</code>) that represents the account to put into holiday mode.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="smolchange_next_charge_date">smol.change_next_charge_date<a class="headerlink" href="#smolchange_next_charge_date" title="Permanent link">#</a></h2>
+<p>Changes the next charge date for a Smol subscription</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Optional</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>target.entity_id</code></td>
+<td><code>no</code></td>
+<td>The name of the holiday sensor (i.e. <code>sensor.smol_{{ACCOUNT_NAME}}_{{PRODUCT_ID}}_subscription_next_charge</code>) that represents the account to put into holiday mode.</td>
+</tr>
+<tr>
+<td><code>data.next_charge_date</code></td>
+<td><code>no</code></td>
+<td>The next charge date to change the subscription to.</td>
+</tr>
+</tbody>
+</table>
 
 
 
