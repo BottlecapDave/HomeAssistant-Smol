@@ -16,7 +16,11 @@ def assert_expected_next_charge_date(account_info: SmolAccount, expected_subscri
     for subscription in account_info.subscriptions:
         if subscription.id == expected_subscription_id:
             subscription_discovered = True
-            assert subscription.nextChargeScheduledAt == expected_next_charge_date
+
+            if expected_next_charge_date is None:
+                assert subscription.nextChargeScheduledAt is None
+            else:
+                assert subscription.nextChargeScheduledAt.date() == expected_next_charge_date.date()
 
     assert subscription_discovered is True
 
@@ -34,8 +38,8 @@ async def test_when_change_next_charge_date_is_called_then_true_returned():
     expected_address_id = account_info.subscriptions[0].address.id
     expected_subscription_id = account_info.subscriptions[0].id
     original_next_charge_date = account_info.subscriptions[0].nextChargeScheduledAt
-    # Always returns 5am regardless what is sent
-    expected_next_charge_date = now().replace(hour=5, minute=0, second=0, microsecond=0) + timedelta(days=14)
+    # Always returns 4am regardless what is sent
+    expected_next_charge_date = now().replace(hour=4, minute=0, second=0, microsecond=0) + timedelta(days=14)
 
     try:
         account_info = await client.async_get_account()

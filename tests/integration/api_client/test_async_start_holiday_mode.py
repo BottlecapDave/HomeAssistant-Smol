@@ -37,6 +37,7 @@ async def test_when_start_holiday_mode_is_called_then_true_returned():
         assert account_info.holidayMode.config.endDate == expected_end_date
     finally:
         # Cleanup - return to original state
+        await client.async_end_holiday()
+        
         if (original_end_date is not None):
-            await client.async_end_holiday()
             await client.async_start_holiday(original_end_date)
